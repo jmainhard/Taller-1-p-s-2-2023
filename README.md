@@ -1,6 +1,6 @@
 # Taller 1 - Pruebas de software
 
-Scrap of houses in [Portal Inmobiliario](https://www.portalinmobiliario.com). 
+Scrap of houses in [Portal Inmobiliario](https://www.portalinmobiliario.com) and transform the prices to CLP. 
 
 <!-- toc -->
 * [Starting](#starting)

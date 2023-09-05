@@ -4,7 +4,6 @@ import { getDataFromURL } from "./utils/request.js";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import filterByPrice from "./filter-by-price.js";
-import axios from
 const argv = yargs(hideBin(process.argv)).argv;
 
 const city = argv.location || "temuco-la-araucania";
@@ -27,7 +26,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 async function getHousesFromWeb() {
   console.log(`Page ${page + 1} of ${MAX_pages}`);
 
-  const data = getDataFromURL(
+  const data = await getDataFromURL(
     `https://www.portalinmobiliario.com/venta/casa/propiedades-usadas/${city}/_Desde_${
       (argv.perPage || 50) * (page + 1)
     }_NoIndex_True`
@@ -80,20 +79,18 @@ async function getHousesFromWeb() {
 getHousesFromWeb().then(async () => {
   const data = await getDataFromURL("https://mindicador.cl/api");
   const housesWithPriceInCLP = houses.map((house) => {
-	  return {
-		  ...house,
-		  priceInCLP: new Intl.NumberFormat("es-CL", {
-			  currency: "CLP",
-			  style: "currency",
-		  }).format(
-			  house.inUF ? house.originalPrice * data.uf.valor : house.originalPrice
-		  ),
-	  };
+    return {
+      ...house,
+      priceInCLP: new Intl.NumberFormat("es-CL", {
+        currency: "CLP",
+        style: "currency",
+      }).format(
+        house.inUF ? house.originalPrice * data.uf.valor : house.originalPrice
+      ),
+    };
   });
 
   writeFile(city, housesWithPriceInCLP);
-  console.log(argv.maximumPrice);
-  console.log(housesWithPriceInCLP);
   if (argv.maximumPrice) {
     filterByPrice({
       houses: housesWithPriceInCLP,
