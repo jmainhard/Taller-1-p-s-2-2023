@@ -1,6 +1,14 @@
 import XLSX from "xlsx";
-import fs from "fs";
+import { writeFile } from "./utils/writer.js";
 
+/**
+ * Filter houses based on a maximum price and create an XLSX file containing the filtered data.
+ *
+ * @param {object} options - An object containing the following parameters:
+ * @param {Array} options.houses - An array of house objects to be filtered.
+ * @param {number} options.maximumPrice - The maximum price for filtering houses.
+ * @param {string} options.city - The name of the city associated with the data.
+ */
 function filterByPrice({ houses, maximumPrice, city }) {
 	const filteredHouses = houses
 		.filter(
@@ -21,16 +29,7 @@ function filterByPrice({ houses, maximumPrice, city }) {
 	XLSX.writeFile(workBook, `./xlsx/${city}.xlsx`);
 	console.log(`${city} XLSX File generated successfully`);
 
-	fs.writeFile(
-		`./json/${city}.json`,
-		JSON.stringify(filteredHouses),
-		function (err) {
-			if (err) {
-				console.log(err);
-			}
-			console.log(`${city} JSON generated successfully`);
-		}
-	);
+	writeFile(city, filteredHouses);
 }
 
 export default filterByPrice;
